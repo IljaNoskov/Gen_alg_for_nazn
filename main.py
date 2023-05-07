@@ -4,9 +4,9 @@
 # 3) Пишу функцию оценки той или иной комбинации +- (использовать comb_sum, O(n))
 # 4) Функцию создания ребёнка из родителей +
 # 5) Запускаю весь алгоритм +
-# 6) Пишу функцию для мутации
-# 7) Пишу нормальный выбор родителей для детей
-# 8) Редачу генетику так, чтобы можно было выбирать % детей и % мутаций
+# 6) Пишу функцию для мутации +
+# 7) Пишу нормальный выбор родителей для детей +
+# 8) Редачу генетику так, чтобы можно было выбирать % детей и % мутаций +
 # 9) Делаю GUI
 # 9.1) Возмодность задать матрицу, параметры гинетики и галачку на решение перебором
 # 10) Визуал с графиками
@@ -127,11 +127,19 @@ def gen_alg(matrix, pokol_num, gen_size, child_num, mut_num):
                 gen.append(random_gen(len(matrix)))
                 gen[j] = [comb_sum(matrix, gen[j]), gen[j], 'rand_gen']
         else:
-            gen = gen[0:-(child_num+mut_num)]
-            for comb in range(child_num):
-                # assert is_norm_comb(gen[0][1]) and is_norm_comb(gen[comb][1]), (gen[0], " ", gen[comb])
-                gen.append(make_child(gen[0][1], gen[comb][1]))
-                gen[-1] = [comb_sum(matrix, gen[-1]), gen[-1], 'make_ch']
+            gen = gen[0:-(child_num + mut_num)]
+            real_child_num = 0
+            for comb1_ind in range(num_of_best_comb(child_num)):
+                if real_child_num == child_num:
+                    break
+                for comb2_ind in range(comb1_ind + 1, num_of_best_comb(child_num) + 2):
+                    assert comb2_ind < len(gen), (len(gen), comb2_ind, child_num, mut_num)
+                    gen.append(make_child(gen[comb1_ind][1], gen[comb2_ind][1]))
+                    gen[-1] = [comb_sum(matrix, gen[-1]), gen[-1], 'make_child']
+                    real_child_num += 1
+                    if real_child_num == child_num:
+                        break
+            assert real_child_num == child_num, (real_child_num, child_num)
 
             for comb in range(mut_num):
                 gen.append(mutation(gen[comb][1]))
@@ -139,6 +147,12 @@ def gen_alg(matrix, pokol_num, gen_size, child_num, mut_num):
         gen = sorted(gen, reverse=True)
     return gen[0]
 
+
+def num_of_best_comb(n):
+    # n=(x*(x+1))/2
+    # x*x + x - 2n = 0
+    D = 1 + 8 * n
+    return round((-1+pow(D, 1/2))/2)
 
 def mutation(comb):
     new_comb = []
@@ -168,17 +182,20 @@ def mutation(comb):
 # print(make_child(list1, list2))
 
 
-mat = make_random_matrix(5)
+mat = make_random_matrix(20)
 
 # print_matrix(mat)
 # print(pereb_reh(mat))
 
-
-per_rez = pereb_reh(mat)[0]
-print(per_rez)
+child_per = 20
+mutation_per = 5
+# per_rez = pereb_reh(mat)[0]
+# print(per_rez)
 for i in range(10, 1000, 100):
     start_time = time.time()
-    cur_rez = gen_alg(mat, i, i, i // 10, i//10)
+    # print(i, i, round(i * child_per / 100), round(mutation_per * i / 100))
+    cur_rez = gen_alg(mat, i, i, round(i * child_per / 100), round(mutation_per * i / 100))
     end_time = time.time()
     rez = end_time - start_time
     print(i, rez, cur_rez[0], cur_rez[2])
+    
