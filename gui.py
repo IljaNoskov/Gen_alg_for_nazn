@@ -1,39 +1,76 @@
 from tkinter import *
-from tkinter import ttk
+import gen_alg
 
-def gen_alg(tab):
-    lbl0 = Label(tab, text='Введите параметры генетического алгоритма')
-    lbl0.grid(column=0, row=1)
+
+def test():
+    get_matrix = matrix_file_z.get()
+    try:
+        mat = gen_alg.matrix_from_file(get_matrix)
+    except FileNotFoundError:
+        lbl_ans["text"] = "Файл с таким именем не найден"
+        return -1
+    get_bool = chk_state.get()
+    if get_bool:
+        pokol_num = 100
+        pokol_size = 500
+        child_per = 20
+        mutatiom_per = 20
+    else:
+        pokol_num = tk_pokol_num.get()
+        pokol_size = tk_pokol_size.get()
+        child_per = tk_child_per.get()
+        mutatiom_per = tk_mutatiom_per.get()
+        if child_per + mutatiom_per > 50:
+            lbl_ans["text"] = "Вы выбрали слишком большое проценты потомков или мутантов"
+    rez = gen_alg.gen_alg(mat, pokol_num, pokol_size, round(pokol_size * child_per / 100),
+                          round(mutatiom_per * pokol_size / 100))
+    lbl_ans["text"] = f"Сумма={rez[0]}, Кодировка:{rez[1]}"
+
 
 window = Tk()
-window.title("Выбирите способ генерации матрицы")
-window.geometry('400x250')
-tab_control = ttk.Notebook(window)
-tab1 = ttk.Frame(tab_control)
-tab2 = ttk.Frame(tab_control)
-tab3 = ttk.Frame(tab_control)
+window.title("Решение задачи о назначениях")
+window.geometry("600x400")
 
-lbl0 = Label(window, text='Введите параметры генетического алгоритма')
-lbl0.grid(column=0, row=0)
-
-#
-tab_control.add(tab1, text='Случайная по размерам')
-lbl1 = Label(tab1, text='Введите размер квадратной матрицы')
-lbl1.grid(column=0, row=0)
-mat_size = Entry(tab1, width=10)
-mat_size.grid(column=1, row=0)
-
-#
-tab_control.add(tab2, text='Из файла')
-lbl2 = Label(tab2, text='Вкладка 2')
-lbl2.grid(column=0, row=0)
-gen_alg(tab2)
+tk_pokol_num = IntVar()
+tk_pokol_size = IntVar()
+tk_child_per = IntVar()
+tk_mutatiom_per = IntVar()
+matrix_file_z = StringVar()
+chk_state = BooleanVar()
+chk_state.set(True)
 
 
-#
-tab_control.add(tab3, text='Задать вручную')
-lbl3 = Label(tab3, text='Вкладка 3')
+message_1 = Label(text="Введите название файла матрицы")
+message_2 = Label(text="Введите количество поколений")
+message_3 = Label(text="Введите размер поколения")
+message_4 = Label(text="Введите % потомков")
+message_5 = Label(text="Введите % мутантов")
+lbl_ans = Label(text="Тут будет ответ")
 
-lbl3.grid(column=0, row=0)
-tab_control.pack(expand=1, fill='both')
+
+ent_matrix_file = Entry(textvariable=matrix_file_z)
+ent_pokol_num = Entry(textvariable=tk_pokol_num)
+ent_pokol_size = Entry(textvariable=tk_pokol_size)
+ent_child_per = Entry(textvariable=tk_child_per)
+ent_mutatiom_per = Entry(textvariable=tk_mutatiom_per)
+
+b = Button(command=test, text="Рассчитать")
+
+chk = Checkbutton(window, text='Использовать стандартные значения параметров', var=chk_state)
+
+message_1.grid(row=0, column=0)
+ent_matrix_file.grid(row=0, column=1)
+chk.grid(row=1, column=0)
+message_2.grid(row=2, column=0)
+ent_pokol_num.grid(row=2, column=1)
+message_3.grid(row=3, column=0)
+ent_pokol_size.grid(row=3, column=1)
+message_4.grid(row=4, column=0)
+ent_child_per.grid(row=4, column=1)
+message_5.grid(row=5, column=0)
+ent_mutatiom_per.grid(row=5, column=1)
+b.grid(row=6, column=1)
+lbl_ans.grid(row=7, column=0)
+
+
 window.mainloop()
