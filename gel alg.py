@@ -1,32 +1,20 @@
-# План работы:
-# 1) Пишу функцию считывания матрицы из файла +
-# 2) Функцию решения за O(M!) - где M -размер матрицы +
-# 3) Пишу функцию оценки той или иной комбинации +- (использовать comb_sum, O(n))
-# 4) Функцию создания ребёнка из родителей +
-# 5) Запускаю весь алгоритм +
-# 6) Пишу функцию для мутации +
-# 7) Пишу нормальный выбор родителей для детей +
-# 8) Редачу генетику так, чтобы можно было выбирать % детей и % мутаций +
-# 9) Делаю GUI
-# 9.1) Возмодность задать матрицу, параметры гинетики и галачку на решение перебором
-# 10) Визуал с графиками
-
 import random
 import itertools
 import time
 
 
-def matrix_from_file(file_name):
+def matrix_from_file(file_name: object) -> object:
     f = open(file_name)
     matrix = []
     for line in f:
         matrix.append([])
         for num in line.split():
             matrix[-1].append(int(num))
+    f.close()
     return matrix
 
 
-def print_matrix(matrix):
+def print_matrix(matrix) -> object:
     for line in matrix:
         print(*line)
 
@@ -37,8 +25,8 @@ def prod_pereb(a):
 
 def comb_sum(matrix, combination):
     sum_comb = 0
-    for i in range(len(matrix)):
-        sum_comb += matrix[i][combination[i]]
+    for index in range(len(matrix)):
+        sum_comb += matrix[index][combination[index]]
     return sum_comb
 
 
@@ -154,6 +142,7 @@ def num_of_best_comb(n):
     D = 1 + 8 * n
     return round((-1+pow(D, 1/2))/2)
 
+
 def mutation(comb):
     new_comb = []
     not_in_comb = list(range(len(comb)))
@@ -171,31 +160,18 @@ def mutation(comb):
     return new_comb
 
 
-# mat = matrix_from_file("matrix")
-# print_matrix(mat)
-#
-# print(pereb_reh(mat))
-#
-# list1 = [1, 2, 3, 4, 5]
-# list2 = [5, 4, 3, 2, 1]
-#
-# print(make_child(list1, list2))
-
-
-mat = make_random_matrix(20)
-
-# print_matrix(mat)
-# print(pereb_reh(mat))
-
 child_per = 20
-mutation_per = 5
-# per_rez = pereb_reh(mat)[0]
-# print(per_rez)
-for i in range(10, 1000, 100):
-    start_time = time.time()
-    # print(i, i, round(i * child_per / 100), round(mutation_per * i / 100))
-    cur_rez = gen_alg(mat, i, i, round(i * child_per / 100), round(mutation_per * i / 100))
-    end_time = time.time()
-    rez = end_time - start_time
-    print(i, rez, cur_rez[0], cur_rez[2])
+mutatiom_per = 5
+
+
+def statistic(matrix, pokol_num, pokol_size, sr):
+    sr_rez = 0
+    s_time = time.time()
+    for _ in range(sr):
+        sr_rez += gen_alg(matrix, pokol_num, pokol_size, round(pokol_size * child_per / 100), round(mutatiom_per * pokol_size / 100))[0]
+    e_time = time.time()
+    sr_time = (e_time - s_time) / sr
+    sr_rez = sr_rez/sr
+    return sr_rez, sr_time
+
     
