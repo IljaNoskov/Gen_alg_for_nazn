@@ -11,15 +11,16 @@ def test():
         return -1
     get_bool = chk_state.get()
     if get_bool:
-        pokol_num = 100
-        pokol_size = 500
+        a = len(mat)
+        pokol_num = 10*a
+        pokol_size = 50*a
         child_per = 20
         mutatiom_per = 20
     else:
-        pokol_num = tk_pokol_num.get()
-        pokol_size = tk_pokol_size.get()
-        child_per = tk_child_per.get()
-        mutatiom_per = tk_mutatiom_per.get()
+        pokol_num = max(1, tk_pokol_num.get())
+        pokol_size = max(1, tk_pokol_size.get())
+        child_per = max(1, tk_child_per.get())
+        mutatiom_per = max(1, tk_mutatiom_per.get())
         if child_per + mutatiom_per > 50:
             lbl_ans["text"] = "Вы выбрали слишком большое проценты потомков или мутантов"
     rez = gen_alg.gen_alg(mat, pokol_num, pokol_size, round(pokol_size * child_per / 100),
@@ -74,3 +75,4 @@ lbl_ans.grid(row=7, column=0)
 
 
 window.mainloop()
+
