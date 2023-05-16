@@ -1,22 +1,9 @@
-# План работы:
-# 1) Пишу функцию считывания матрицы из файла +
-# 2) Функцию решения за O(M!) - где M -размер матрицы +
-# 3) Пишу функцию оценки той или иной комбинации +- (использовать comb_sum, O(n))
-# 4) Функцию создания ребёнка из родителей +
-# 5) Запускаю весь алгоритм +
-# 6) Пишу функцию для мутации +
-# 7) Пишу нормальный выбор родителей для детей +
-# 8) Редачу генетику так, чтобы можно было выбирать % детей и % мутаций +
-# 9) Делаю GUI
-# 9.1) Возмодность задать матрицу, параметры гинетики и галачку на решение перебором
-# 10) Визуал с графиками
-
 import random
 import itertools
 import time
 
 
-def matrix_from_file(file_name):
+def matrix_from_file(file_name: object) -> object:
     f = open(file_name)
     matrix = []
     for line in f:
@@ -27,7 +14,7 @@ def matrix_from_file(file_name):
     return matrix
 
 
-def print_matrix(matrix):
+def print_matrix(matrix) -> object:
     for line in matrix:
         print(*line)
 
@@ -69,34 +56,26 @@ def make_child(comb1, comb2):
             if comb1[index] != comb2[index]:
                 if (new_zn == comb1[index]) and comb2[index] not in not_in_posl:
                     not_in_posl.append(comb2[index])
-                    assert comb2[index] not in comb, (new_zn, comb2[index], comb)
                 elif (new_zn == comb2[index]) and comb1[index] not in not_in_posl:
                     not_in_posl.append(comb1[index])
-                    assert comb1[index] not in comb, (new_zn, comb1[index], comb)
-            assert new_zn not in comb, "1"
 
         elif comb1[index] in comb and comb2[index] in comb:
             new_zn = random.choice(not_in_posl)
-            assert new_zn not in comb, ("2", comb, not_in_posl, new_zn)
             not_in_posl.remove(new_zn)
 
         elif comb1[index] in comb:
             new_zn = comb2[index]
             if new_zn in not_in_posl:
                 not_in_posl.remove(new_zn)
-            assert new_zn not in comb, "3"
 
         else:
             new_zn = comb1[index]
             if new_zn in not_in_posl:
                 not_in_posl.remove(new_zn)
-            assert new_zn not in comb, "4"
 
         comb.append(new_zn)
         assert is_norm_comb(comb), comb
     return comb
-    # Мне всего 19, так что я
-    # pass
 
 
 def is_norm_comb(comb):
@@ -174,7 +153,7 @@ def mutation(comb):
 
 
 child_per = 20
-mutatiom_per = 20
+mutatiom_per = 5
 
 
 def statistic(matrix, pokol_num, pokol_size, sr):
@@ -186,24 +165,6 @@ def statistic(matrix, pokol_num, pokol_size, sr):
     sr_time = (e_time - s_time) / sr
     sr_rez = sr_rez/sr
     return sr_rez, sr_time
-
-# mat = matrix_from_file("matrix")
-# print_matrix(mat)
-#
-# print(pereb_reh(mat))
-#
-# list1 = [1, 2, 3, 4, 5]
-# list2 = [5, 4, 3, 2, 1]
-#
-# print(make_child(list1, list2))
-
-
-
-# print_matrix(mat)
-# print(pereb_reh(mat))
-
-# per_rez = pereb_reh(mat)[0]
-# print(per_rez)
 
 
 for i in range(3, 21):
@@ -238,7 +199,6 @@ for i in range(3, 21):
     # Перебираем одновременно количество и размер поколения
     for p_size, p_num in zip(range(100, 1001, 100), range(100, 1001, 100)):
         st = statistic(mat, p_num, p_size, 20)
-        # matrix_size, perebor_num, perebor_time, p_size, p_num, st[0], st[1], "\n"
         string = f"{matrix_size} {perebor_num} {perebor_time} {p_size} {p_num} {st[0]} {st[1]}\n"
         file.write(string)
     print(matrix_size, "1")
@@ -257,14 +217,6 @@ for i in range(3, 21):
         file.write(string)
     print(matrix_size, "Конец")
     print(matrix_size)
-    #file.close
-
-
-    # start_time = time.time()
-    # # print(i, i, round(i * child_per / 100), round(mutation_per * i / 100))
-    # cur_rez = gen_alg(mat, i, i, round(i * child_per / 100), round(mutation_per * i / 100))
-    # end_time = time.time()
-    # rez = end_time - start_time
-    # print(i, rez, cur_rez[0], cur_rez[2])
+    
 file.close()
 
