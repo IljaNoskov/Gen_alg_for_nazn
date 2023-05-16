@@ -56,34 +56,26 @@ def make_child(comb1, comb2):
             if comb1[index] != comb2[index]:
                 if (new_zn == comb1[index]) and comb2[index] not in not_in_posl:
                     not_in_posl.append(comb2[index])
-                    assert comb2[index] not in comb, (new_zn, comb2[index], comb)
                 elif (new_zn == comb2[index]) and comb1[index] not in not_in_posl:
                     not_in_posl.append(comb1[index])
-                    assert comb1[index] not in comb, (new_zn, comb1[index], comb)
-            assert new_zn not in comb, "1"
 
         elif comb1[index] in comb and comb2[index] in comb:
             new_zn = random.choice(not_in_posl)
-            assert new_zn not in comb, ("2", comb, not_in_posl, new_zn)
             not_in_posl.remove(new_zn)
 
         elif comb1[index] in comb:
             new_zn = comb2[index]
             if new_zn in not_in_posl:
                 not_in_posl.remove(new_zn)
-            assert new_zn not in comb, "3"
 
         else:
             new_zn = comb1[index]
             if new_zn in not_in_posl:
                 not_in_posl.remove(new_zn)
-            assert new_zn not in comb, "4"
 
         comb.append(new_zn)
         assert is_norm_comb(comb), comb
     return comb
-    # Мне всего 19, так что я
-    # pass
 
 
 def is_norm_comb(comb):
@@ -173,5 +165,4 @@ def statistic(matrix, pokol_num, pokol_size, sr):
     sr_time = (e_time - s_time) / sr
     sr_rez = sr_rez/sr
     return sr_rez, sr_time
-
     
